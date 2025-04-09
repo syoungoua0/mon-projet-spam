@@ -105,9 +105,7 @@ if st.session_state.logged_in:
     model, vectorizer = load_model_and_vectorizer()
     fernet = load_fernet()
 
-    if not verifier_hash_model("spam_model.joblib", HASH_MODELE_ATTENDU):
-        st.error("🚨 L'intégrité du modèle n'est pas vérifiée !")
-
+    
     st.subheader("📨 Analyse d'un SMS")
     sms_input = st.text_area("Entrez le message SMS à analyser")
 
