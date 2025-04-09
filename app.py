@@ -145,7 +145,7 @@ if st.session_state.logged_in:
     # 📊 Statistiques du modèle
     if st.checkbox("Afficher les statistiques du modèle"):
         try:
-            df = pd.read_csv("https://raw.githubusercontent.com/your-username/your-repo/main/spam.csv", encoding='latin-1')
+            df = pd.read_csv("spam.csv", encoding='latin-1')
             df = df.rename(columns={"v1": "label", "v2": "message"})
             df['label_num'] = df['label'].map({"ham": 0, "spam": 1})
 
