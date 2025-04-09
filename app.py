@@ -179,6 +179,6 @@ if st.session_state.logged_in:
             st.write(f"**F1-score** : {f1:.2f}")
 
     except Exception as e:
-        st.error("Erreur lors du calcul des statistiques : " + str(e))
+    st.error("Erreur lors du calcul des statistiques : " + str(e))
 else:
     st.warning("Veuillez vous connecter pour accéder à l'application.")
