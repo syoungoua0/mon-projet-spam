@@ -86,7 +86,7 @@ if authenticated:
 
     if sms_input:
         langue = detecter_langue(sms_input)
-        st.info(f"🌍 Langue détectée : **{langue}**")
+        #st.info(f"🌍 Langue détectée : **{langue}**")
 
         if langue != "en":
             st.warning("⚠️ Le modèle est entraîné uniquement sur des messages en **anglais**. Les résultats peuvent être incorrects.")
