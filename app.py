@@ -86,10 +86,10 @@ if authenticated:
 
     if sms_input:
         langue = detecter_langue(sms_input)
-        st.info(f"🌍 Langue détectée : **{langue}**")
+        st.info(f" Langue détectée : **{langue}**")
 
         if langue != "en":
-            st.warning("⚠️ Le modèle est entraîné uniquement sur des messages en **anglais**. Les résultats peuvent être incorrects.")
+            st.warning("⚠ Le modèle est entraîné uniquement sur des messages en **anglais**. Les résultats peuvent être incorrects.")
         else:
             clean_text = nettoyer_texte(sms_input)
             vecteur = vectorizer.transform([clean_text])
@@ -99,9 +99,9 @@ if authenticated:
             if role == "data_scientist":
                 st.write("### 🔬 Résultat complet")
                 st.write(f"Vecteur TF-IDF : {vecteur.toarray()}")
-                st.success(f"✅ Prédiction : **{label}**")
+                st.success(f" Prédiction : **{label}**")
             elif role == "analyst":
                 st.write("### 🔎 Résultat")
-                st.success(f"✅ Prédiction : **{label}**")
+                st.success(f" Prédiction : **{label}**")
 else:
     st.warning("Veuillez vous connecter pour accéder à l'application.")
