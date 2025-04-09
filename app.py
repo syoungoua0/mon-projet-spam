@@ -9,19 +9,20 @@ import hashlib
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from langdetect import detect, LangDetectException
 
 # Téléchargement des ressources nécessaires de nltk
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
 
-# 🔐 Utilisateurs simulés
+# Utilisateurs simulés
 USERS = {
     "Stephane": {"password": "1234", "role": "data_scientist"},
     "Lionnel": {"password": "5678", "role": "analyst"}
 }
 
-# 🧼 Fonction de nettoyage
+# Fonction de nettoyage
 def nettoyer_texte(texte):
     texte = texte.lower()
     texte = re.sub(r'http\S+|www\S+', '', texte)
@@ -33,7 +34,14 @@ def nettoyer_texte(texte):
     tokens = [lemmatizer.lemmatize(word) for word in tokens]
     return ' '.join(tokens)
 
-# 🗝️ Vérification et chargement des clés / modèles
+# Détection de langue
+def detecter_langue(texte):
+    try:
+        return detect(texte)
+    except LangDetectException:
+        return "unknown"
+
+# Chargement des modèles
 @st.cache_resource
 def load_model_and_vectorizer():
     with open("vectorizer.pkl", "rb") as vfile:
@@ -49,8 +57,9 @@ def load_fernet():
         return Fernet(key)
     return None
 
-# 🌐 Interface utilisateur
-st.title("🔐 Interface sécurisée de classification des SMS")
+# Interface utilisateur
+st.set_page_config(page_title="Détecteur de SMS", page_icon="📨")
+st.title(" Interface sécurisée de classification des SMS")
 st.sidebar.header("Connexion utilisateur")
 
 username = st.sidebar.text_input("Nom d'utilisateur")
@@ -67,26 +76,32 @@ else:
     if username and password:
         st.sidebar.error("Identifiants incorrects")
 
-# ✅ Interface principale une fois connecté
+# Interface principale après authentification
 if authenticated:
     model, vectorizer = load_model_and_vectorizer()
     fernet = load_fernet()
 
-    st.subheader("📩 Analyse d'un SMS")
+    st.subheader(" Analyse d'un SMS")
     sms_input = st.text_area("Entrez le message SMS à analyser")
 
     if sms_input:
-        clean_text = nettoyer_texte(sms_input)
-        vecteur = vectorizer.transform([clean_text])
-        prediction = model.predict(vecteur)[0]
-        label = "Spam" if prediction == 1 else "Ham"
+        langue = detecter_langue(sms_input)
+        st.info(f"🌍 Langue détectée : **{langue}**")
 
-        if role == "data_scientist":
-            st.write("### 🧠 Résultat complet")
-            st.write(f"Vecteur TF-IDF : {vecteur.toarray()}")
-            st.success(f"✅ Prédiction : {label}")
-        elif role == "analyst":
-            st.write("### 🔎 Résultat")
-            st.success(f"✅ Prédiction : {label}")
+        if langue != "en":
+            st.warning("⚠️ Le modèle est entraîné uniquement sur des messages en **anglais**. Les résultats peuvent être incorrects.")
+        else:
+            clean_text = nettoyer_texte(sms_input)
+            vecteur = vectorizer.transform([clean_text])
+            prediction = model.predict(vecteur)[0]
+            label = "Spam" if prediction == 1 else "Ham"
+
+            if role == "data_scientist":
+                st.write("### 🔬 Résultat complet")
+                st.write(f"Vecteur TF-IDF : {vecteur.toarray()}")
+                st.success(f"✅ Prédiction : **{label}**")
+            elif role == "analyst":
+                st.write("### 🔎 Résultat")
+                st.success(f"✅ Prédiction : **{label}**")
 else:
-    st.warning("🔒 Veuillez vous connecter pour accéder à l'application.")
+    st.warning("Veuillez vous connecter pour accéder à l'application.")
