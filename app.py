@@ -142,8 +142,8 @@ if st.session_state.logged_in:
         for i, (msg, lbl) in enumerate(st.session_state.historique[::-1]):
             st.write(f"{i+1}. **{lbl}** — {msg}")
 
-    # 📊 Statistiques du modèle
-    if st.checkbox("Afficher les statistiques du modèle"):
+   # 📊 Statistiques du modèle
+if st.checkbox("Afficher les statistiques du modèle"):
     try:
         # Lire le fichier CSV
         df = pd.read_csv("spam.csv", encoding='latin-1')
@@ -179,6 +179,5 @@ if st.session_state.logged_in:
             st.write(f"**F1-score** : {f1:.2f}")
 
     except Exception as e:
-    st.error("Erreur lors du calcul des statistiques : " + str(e))
-    else:
+        st.error("Erreur lors du calcul des statistiques : " + str(e))
     st.warning("Veuillez vous connecter pour accéder à l'application.")
