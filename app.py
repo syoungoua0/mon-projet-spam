@@ -180,5 +180,5 @@ if st.session_state.logged_in:
 
     except Exception as e:
     st.error("Erreur lors du calcul des statistiques : " + str(e))
-else:
+    else:
     st.warning("Veuillez vous connecter pour accéder à l'application.")
